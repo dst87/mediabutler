@@ -70,7 +70,10 @@ function callbackQuery(){
       pauseSAB($buttonData);
       answerCallbackQuery($callbackID, "Downloads paused.");
       break;
-
+    case "Very good, sir.  What speed should I limit your downloads to?":
+      limitSAB($buttonData);
+      answerCallbackQuery($callbackID, "Downloads limited to ".$buttonData."% of maximum.");
+      break;
     default:
       break;
   }
@@ -86,7 +89,7 @@ function parseCommand($cmd){
       resumeSAB();
       break;
     case "setspeed":
-      setSABSpeed();
+      SABSpeedPrompt();
       break;
     default:
       $message = "Command not recognised, sorry!";
@@ -122,6 +125,12 @@ function pauseSAB($time) {
   $result = file_get_contents($URL);
 }
 
+function limitSAB($limit) {
+  global $SABBaseURL;
+  $URL = $SABBaseURL."&mode=config&name=speedlimit&value=".$limit;
+  $result = file_get_contents($URL);
+}
+
 function resumeSAB() {
   global $SABBaseURL;
   $URL = $SABBaseURL."&mode=resume";
@@ -129,7 +138,20 @@ function resumeSAB() {
   sendMessage("Your downloads have been resumed, sir.");
 }
 
-function setSABSpeed() {
+function SABSpeedPrompt() {
+  global $SABBaseURL, $telegram;
+
+  $b10 = $telegram->buildInlineKeyboardButton("10%", "", "10");
+  $b25 = $telegram->buildInlineKeyboardButton("25%", "", "25");
+  $b50 = $telegram->buildInlineKeyboardButton("50%", "", "50");
+  $b75 = $telegram->buildInlineKeyboardButton("75%", "", "75");
+  $b80 = $telegram->buildInlineKeyboardButton("80%", "", "80");
+  $b90 = $telegram->buildInlineKeyboardButton("90%", "", "90");
+  $b100 = $telegram->buildInlineKeyboardButton("100%", "", "100");
+
+  $kbd = $telegram->buildInlineKeyboard([[$b10, $b25, $b50],[$b75, $b80, $b90],[$b100]]);
+
+  sendMessageWithInlineKeyboard("Very good, sir.  What speed should I limit your downloads to?", $kbd);
 
 }
 
