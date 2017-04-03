@@ -91,10 +91,33 @@ function parseCommand($cmd){
     case "setspeed":
       SABSpeedPrompt();
       break;
+    case "status":
+      SABStatus();
+      break;
     default:
       $message = "Command not recognised, sorry!";
       break;
   }
+}
+
+
+function SABStatus() {
+  global $SABBaseURL, $telegram;
+  $URL = $SABBaseURL."&mode=queue";
+  $result = file_get_contents($URL);
+  $resultArray = json_decode($result, true);
+
+  $totalSlots = $resultArray["queue"]["noofslots_total"];
+
+   if ($resultArray["queue"]["paused"]) {
+      $message = "The queue is currently paused.\n*Items in queue:* ".$totalSlots;
+   }
+   else {
+     $message = "SABnzbd is currently downloading.\n*Items in queue:* ".$totalSlots;
+   }
+
+  sendMessage($message);
+
 }
 
 
@@ -157,7 +180,7 @@ function SABSpeedPrompt() {
 
 function sendMessage($message){
   global $chat_id, $telegram;
-  $content = array('chat_id' => $chat_id, 'text' => $message);
+  $content = array('chat_id' => $chat_id, 'text' => $message, 'parse_mode' => "Markdown");
   $telegram->sendMessage($content);
 }
 
