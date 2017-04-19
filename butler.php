@@ -16,6 +16,10 @@ $text = $telegram->Text();
 $chat_id = $telegram->ChatID();
 
 
+// Emoji characters for numbers
+$emojiNum = ["1️⃣","2️⃣","3️⃣","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣","🔟"];
+
+
 file_put_contents("log.log", print_r($result, true));
 
 
@@ -102,19 +106,34 @@ function parseCommand($cmd){
 
 
 function SABStatus() {
-  global $SABBaseURL, $telegram;
-  $URL = $SABBaseURL."&mode=queue";
+  global $SABBaseURL, $telegram, $emojiNum;
+
+  $maxItemsToReturn = 5;
+
+  $URL = $SABBaseURL."&mode=queue&start=0&limit=".$maxItemsToReturn;
   $result = file_get_contents($URL);
   $resultArray = json_decode($result, true);
 
+  $currentSpeed = $resultArray["queue"]["speed"];
   $totalSlots = $resultArray["queue"]["noofslots_total"];
 
    if ($resultArray["queue"]["paused"]) {
       $message = "⏸ The queue is currently paused.\n*Items in queue:* ".$totalSlots;
    }
    else {
-     $message = "▶️ The queue is currently downloading.\n*Items in queue:* ".$totalSlots;
+     $message = "▶️ The queue is currently downloading at ".$currentSpeed."B/s.\n*Items in queue:* ".$totalSlots;
    }
+
+  $slots = $resultArray["queue"]["slots"];
+
+  foreach ($slots as $slot) {
+    $fileName = str_replace(".", " ", $slot["filename"]);
+    $percentComplete = $slot["percentage"];
+    $fileSize = $slot["size"];
+    $index = $slot["index"];
+    $message .= "\n\n".$emojiNum[$index]." ".$fileName;
+  }
+
 
   sendMessage($message);
 
