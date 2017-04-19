@@ -135,6 +135,9 @@ function SABStatus() {
     $timeLeft = $slot["timeleft"];
     $index = $slot["index"];
     $message .= "\n\n".$emojiNum[$index]." ".$fileName;
+    if($percentComplete != 0){
+      $message .= "\n📡 ".$percentComplete."% of ".$fileSize;
+    }
     if($downloading){
       $message .= "\n⏱ ".$timeLeft;
     }
