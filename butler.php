@@ -119,12 +119,21 @@ function SABStatus() {
 
    if ($resultArray["queue"]["paused"]) {
     $downloading = false;
-    $message = "⏸ The queue is currently paused.\n*Items in queue:* ".$totalSlots;
+    $resumingIn = $resultArray["queue"]["pause_int"];
+    if ($resumingIn != 0) {
+      $message = "⏸ The queue is currently paused and will resume in ".$resumingIn.".";
+    }
+    else {
+      $message = "⏸ The queue is currently paused.";
+    }
+
    }
    else {
     $downloading = true;
-    $message = "▶️ The queue is currently downloading at ".$currentSpeed."B/s.\n*Items in queue:* ".$totalSlots;
+    $message = "▶️ The queue is currently downloading at ".$currentSpeed."B/s.";
    }
+
+   $message .= "\n*Items in queue:* ".$totalSlots;
 
   $slots = $resultArray["queue"]["slots"];
 
