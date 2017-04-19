@@ -118,10 +118,12 @@ function SABStatus() {
   $totalSlots = $resultArray["queue"]["noofslots_total"];
 
    if ($resultArray["queue"]["paused"]) {
-      $message = "⏸ The queue is currently paused.\n*Items in queue:* ".$totalSlots;
+    $downloading = false;
+    $message = "⏸ The queue is currently paused.\n*Items in queue:* ".$totalSlots;
    }
    else {
-     $message = "▶️ The queue is currently downloading at ".$currentSpeed."B/s.\n*Items in queue:* ".$totalSlots;
+    $downloading = true;
+    $message = "▶️ The queue is currently downloading at ".$currentSpeed."B/s.\n*Items in queue:* ".$totalSlots;
    }
 
   $slots = $resultArray["queue"]["slots"];
@@ -130,8 +132,12 @@ function SABStatus() {
     $fileName = str_replace(".", " ", $slot["filename"]);
     $percentComplete = $slot["percentage"];
     $fileSize = $slot["size"];
+    $timeLeft = $slot["timeleft"];
     $index = $slot["index"];
     $message .= "\n\n".$emojiNum[$index]." ".$fileName;
+    if($downloading){
+      $message .= "\n⏱ ".$timeLeft;
+    }
   }
 
 
