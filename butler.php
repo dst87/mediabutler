@@ -110,10 +110,10 @@ function SABStatus() {
   $totalSlots = $resultArray["queue"]["noofslots_total"];
 
    if ($resultArray["queue"]["paused"]) {
-      $message = "The queue is currently paused.\n*Items in queue:* ".$totalSlots;
+      $message = "⏸ The queue is currently paused.\n*Items in queue:* ".$totalSlots;
    }
    else {
-     $message = "SABnzbd is currently downloading.\n*Items in queue:* ".$totalSlots;
+     $message = "▶️ The queue is currently downloading.\n*Items in queue:* ".$totalSlots;
    }
 
   sendMessage($message);
