@@ -20,10 +20,6 @@ $chat_id = $telegram->ChatID();
 $emojiNum = ["1️⃣","2️⃣","3️⃣","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣","🔟"];
 
 
-file_put_contents("log.log", print_r($result, true));
-
-
-
 if (array_key_exists("message", $result)) {
   // Check only permitted users are being parsed
   $user = $result["message"]["from"]["username"];
@@ -113,6 +109,8 @@ function SABStatus() {
   $URL = $SABBaseURL."&mode=queue&start=0&limit=".$maxItemsToReturn;
   $result = file_get_contents($URL);
   $resultArray = json_decode($result, true);
+
+  logArrayToFile($resultArray);
 
   $currentSpeed = $resultArray["queue"]["speed"];
   $totalSlots = $resultArray["queue"]["noofslots_total"];
@@ -213,6 +211,18 @@ function SABSpeedPrompt() {
 
   sendMessageWithInlineKeyboard("Very good, sir.  What speed should I limit your downloads to?", $kbd);
 
+}
+
+function logStringToFile($string){
+  file_put_contents("log.log", $string, FILE_APPEND);
+}
+
+function logArrayToFile($array){
+  logStringToFile(print_r($array, true));
+}
+
+function clearLog(){
+  file_put_contents("log.log", "");
 }
 
 function sendMessage($message){
